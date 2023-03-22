@@ -12,9 +12,9 @@ class App extends Component {
     super(props);
     this.state = {
       data: [
-        { name: 'John C.', salary: 800, increase: false, id: 1 },
-        { name: 'Alex M.', salary: 3000, increase: true, id: 2 },
-        { name: 'Carl W.', salary: 5000, increase: false, id: 3 },
+        { name: 'John C.', salary: 800, increase: false, rise: true, id: 1 },
+        { name: 'Alex M.', salary: 3000, increase: true, rise: false, id: 2 },
+        { name: 'Carl W.', salary: 5000, increase: false, rise: false, id: 3 },
       ]
     }
     this.maxId = 4;
@@ -33,6 +33,7 @@ class App extends Component {
       name,
       salary,
       increase: false,
+      rise: false,
       id: this.maxId++
     }
 
@@ -44,17 +45,55 @@ class App extends Component {
     })
   }
 
+  onToogleIncrease = (id) => {
+    // this.setState(({ data }) => {
+    //   const index = data.findIndex(elem => elem.id === id);
+    //   const old = data[index];
+    //   const newItem = { ...old, increase: !old.increase };
+    //   const newArr = [...data.slice(0, index), newItem, ...data.slice(index + 1)];
+
+    //   return {
+    //     data: newArr
+    //   }
+    // })
+    this.setState(({ data }) => ({
+      data: data.map(item => {
+        if (item.id === id) {
+          return { ...item, increase: !item.increase }
+        }
+        return item;
+      })
+    }))
+  }
+
+  onToogleRise = (id) => {
+    console.log(id)
+  }
+
+  increaseCount = () => {
+    const count = this.state.data.filter(item => {
+      return item.increase === true
+    }).length
+
+    return count
+  }
+
   render() {
     return (
       <div className="app" >
-        <AppInfo />
+        <AppInfo
+          empoyeesCount={this.state.data.length}
+          increaseCount={this.increaseCount()}
+        />
 
         <div className="search-panel">
           <SearchPanel />
           <AppFilter />
           <EmployeesList
             data={this.state.data}
-            onDelete={this.deleteItem} />
+            onDelete={this.deleteItem}
+            onToogleIncrease={this.onToogleIncrease}
+            onToogleRise={this.onToogleRise} />
           <EmployeesAddForm
             onAdd={this.addItem} />
         </div>
